@@ -37,6 +37,23 @@ describe("Value Transformer", () => {
         strictEqual(obj.computedValue, 84);
     });
 
+    it("should work with static property initializers in classes", () => {
+        class Obj {
+            @multiplier(2)
+            static value = 21;
+
+            @multiplier(3)
+            static anotherValue = 14;
+
+            @multiplier(2)
+            static computedValue = this.value;
+        }
+
+        strictEqual(Obj.value, 42);
+        strictEqual(Obj.anotherValue, 42);
+        strictEqual(Obj.computedValue, 84);
+    });
+
     it("should work with property accessors in objects", () => {
         let valueFromSet1;
         let valueFromSet2;
@@ -106,6 +123,41 @@ describe("Value Transformer", () => {
         strictEqual(valueFromSet1, 42);
 
         strictEqual(obj.computedValue, 8);
+        strictEqual(valueFromSet2, 2);
+    });
+
+    it("should work with static property accessors in classes", () => {
+        let valueFromSet1;
+        let valueFromSet2;
+
+        class Obj {
+            @multiplier(2)
+            static get value() {
+                return 21;
+            }
+
+            @multiplier(3)
+            static set anotherValue(n) {
+                valueFromSet1 = n;
+            }
+
+            @multiplier(4)
+            static set computedValue(n) {
+                valueFromSet2 = n;
+            }
+            static get computedValue() {
+                return valueFromSet2;
+            }
+        };
+
+        Obj.anotherValue = 14;
+        Obj.computedValue = 2;
+
+        strictEqual(Obj.value, 42);
+
+        strictEqual(valueFromSet1, 42);
+
+        strictEqual(Obj.computedValue, 8);
         strictEqual(valueFromSet2, 2);
     });
 });
