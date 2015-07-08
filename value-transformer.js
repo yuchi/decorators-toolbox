@@ -13,7 +13,7 @@ export default function valueTransformer(fn) {
                 };
             }
             else if (get) {
-                delete rest.writable; // Related to #1949
+                delete rest.writable; // Related to babel#1949
 
                 return {
                     ...rest,
@@ -24,7 +24,7 @@ export default function valueTransformer(fn) {
                 };
             }
             else if (set) {
-                delete rest.writable; // Related to #1949
+                delete rest.writable; // Related to babel#1949
 
                 return {
                     ...rest,
