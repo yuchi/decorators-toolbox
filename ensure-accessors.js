@@ -3,29 +3,46 @@ export default function ensureAccessors(fn) {
     return (...args) => {
         const decorator = fn(...args);
 
-        return (target, name, { initializer, get, set, ...rest }) => {
+        return (target, name, { initializer, writable, get, set, ...rest }) => {
+            let memo = {};
             const key = Symbol(name.toString());
 
-            delete rest.writable; // Related to babel#1949
+            if ('value' in rest) {
+                initializer = () => rest.value;
+            }
+
+            let descriptor;
 
             if (get || set) {
-                return decorator(target, name, { ...rest, get, set });
+                descriptor = {
+                    ...rest,
+                    get,
+                    set
+                };
             }
             else {
-                return decorator(target, name, {
+                descriptor = {
                     ...rest,
                     get() {
-                        if (!(key in this) && initializer) {
-                            this[ key ] = this::initializer();
+                        if (key in this) {
+                            return this[ key ];
                         }
-
-                        return this[ key ];
+                        else {
+                            return this[ key ] = this::initializer();
+                        }
                     },
                     set(value) {
-                        this[ key ] = value;
+                        if (writable) {
+                            this[ key ] = value;
+                        }
+                        else {
+                            throw new TypeError(`Cannot assign to read only property '${name}' of ${this}`)
+                        }
                     }
-                });
+                };
             }
+
+            return decorator(target, name, descriptor) || descriptor;
         };
     };
 }
