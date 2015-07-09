@@ -28,7 +28,9 @@ export default function ensureAccessors(fn) {
                             return this[ key ];
                         }
                         else {
-                            return this[ key ] = this::initializer();
+                            this[ key ] = undefined;
+                            this[ name ] = this::initializer();
+                            return this[ key ];
                         }
                     },
                     set(value) {

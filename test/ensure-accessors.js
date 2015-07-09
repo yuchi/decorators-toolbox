@@ -31,21 +31,22 @@ describe("Ensure Accessors", () => {
         };
 
         strictEqual(obj.answer, 42);
-        strictEqual(log.length, 1);
-        strictEqual(obj.answer, 42);
         strictEqual(log.length, 2);
+        strictEqual(obj.answer, 42);
+        strictEqual(log.length, 3);
 
-        deepEqual(log[0], [ 'get', 42 ])
-        deepEqual(log[1], [ 'get', 42 ]);
+        deepEqual(log[0], [ 'set', 42 ])
+        deepEqual(log[1], [ 'get', 42 ])
+        deepEqual(log[2], [ 'get', 42 ]);
 
         obj.answer = 28;
 
-        strictEqual(log.length, 3);
-        deepEqual(log[2], [ 'set', 28 ]);
+        strictEqual(log.length, 4);
+        deepEqual(log[3], [ 'set', 28 ]);
 
         strictEqual(obj.answer, 28);
-        strictEqual(log.length, 4);
-        deepEqual(log[3], [ 'get', 28 ]);
+        strictEqual(log.length, 5);
+        deepEqual(log[4], [ 'get', 28 ]);
     });
 
     it("should work with property initializers in classes", () => {
@@ -59,21 +60,22 @@ describe("Ensure Accessors", () => {
         const obj = new Obj();
 
         strictEqual(obj.answer, 42);
-        strictEqual(log.length, 1);
-        strictEqual(obj.answer, 42);
         strictEqual(log.length, 2);
+        strictEqual(obj.answer, 42);
+        strictEqual(log.length, 3);
 
-        deepEqual(log[0], [ 'get', 42 ])
-        deepEqual(log[1], [ 'get', 42 ]);
+        deepEqual(log[0], [ 'set', 42 ])
+        deepEqual(log[1], [ 'get', 42 ])
+        deepEqual(log[2], [ 'get', 42 ]);
 
         obj.answer = 28;
 
-        strictEqual(log.length, 3);
-        deepEqual(log[2], [ 'set', 28 ]);
+        strictEqual(log.length, 4);
+        deepEqual(log[3], [ 'set', 28 ]);
 
         strictEqual(obj.answer, 28);
-        strictEqual(log.length, 4);
-        deepEqual(log[3], [ 'get', 28 ]);
+        strictEqual(log.length, 5);
+        deepEqual(log[4], [ 'get', 28 ]);
     });
 
     it("should work with static property initializers in classes", () => {
@@ -85,21 +87,22 @@ describe("Ensure Accessors", () => {
         };
 
         strictEqual(Obj.answer, 42);
-        strictEqual(log.length, 1);
-        strictEqual(Obj.answer, 42);
         strictEqual(log.length, 2);
+        strictEqual(Obj.answer, 42);
+        strictEqual(log.length, 3);
 
-        deepEqual(log[0], [ 'get', 42 ])
+        deepEqual(log[0], [ 'set', 42 ])
         deepEqual(log[1], [ 'get', 42 ]);
+        deepEqual(log[2], [ 'get', 42 ]);
 
         Obj.answer = 28;
 
-        strictEqual(log.length, 3);
-        deepEqual(log[2], [ 'set', 28 ]);
+        strictEqual(log.length, 4);
+        deepEqual(log[3], [ 'set', 28 ]);
 
         strictEqual(Obj.answer, 28);
-        strictEqual(log.length, 4);
-        deepEqual(log[3], [ 'get', 28 ]);
+        strictEqual(log.length, 5);
+        deepEqual(log[4], [ 'get', 28 ]);
     });
 
     it("should work with property accessors in objects", () => {
