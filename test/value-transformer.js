@@ -1,24 +1,38 @@
 
 import valueTransformer from "../value-transformer";
-import { strictEqual } from "assert";
+import { strictEqual, deepEqual } from "assert";
 
 describe("Value Transformer", () => {
     const multiplier = valueTransformer(m => n => n * m);
+    const logger = valueTransformer(log => fn => function (...args) {
+        log.push([ 'call', args ]);
+        return this::fn(...args);
+    });
 
     it("should work with property initializers in objects", () => {
+        const log = [];
+
         const obj = {
             @multiplier(2)
             value: 21,
 
             @multiplier(3)
-            anotherValue: 14
+            anotherValue: 14,
+
+            @logger(log)
+            method() { return 42; }
         };
 
         strictEqual(obj.value, 42);
         strictEqual(obj.anotherValue, 42);
+        strictEqual(obj.method(), 42);
+
+        deepEqual(log[0], [ 'call', [] ]);
     });
 
     it("should work with property initializers in classes", () => {
+        const log = [];
+
         class Obj {
             @multiplier(2)
             value = 21;
@@ -28,6 +42,9 @@ describe("Value Transformer", () => {
 
             @multiplier(2)
             computedValue = this.value;
+
+            @logger(log)
+            method() { return 42; }
         }
 
         const obj = new Obj();
@@ -35,9 +52,14 @@ describe("Value Transformer", () => {
         strictEqual(obj.value, 42);
         strictEqual(obj.anotherValue, 42);
         strictEqual(obj.computedValue, 84);
+        strictEqual(obj.method(), 42);
+
+        deepEqual(log[0], [ 'call', [] ]);
     });
 
     it("should work with static property initializers in classes", () => {
+        const log = [];
+
         class Obj {
             @multiplier(2)
             static value = 21;
@@ -47,11 +69,17 @@ describe("Value Transformer", () => {
 
             @multiplier(2)
             static computedValue = this.value;
+
+            @logger(log)
+            static method() { return 42; }
         }
 
         strictEqual(Obj.value, 42);
         strictEqual(Obj.anotherValue, 42);
         strictEqual(Obj.computedValue, 84);
+        strictEqual(Obj.method(), 42);
+
+        deepEqual(log[0], [ 'call', [] ]);
     });
 
     it("should work with property accessors in objects", () => {
