@@ -4,7 +4,13 @@ export default function valueTransformer(fn) {
         const transformer = fn(...args);
 
         return (target, name, { initializer, get, set, ...rest }) => {
-            if (initializer) {
+            if ('value' in rest) {
+                return {
+                    ...rest,
+                    value: target::transformer(rest.value)
+                };
+            }
+            else if (initializer) {
                 return {
                     ...rest,
                     initializer(...args) {
