@@ -1,7 +1,24 @@
 
 import ensureAccessors from "./ensure-accessors";
 
-export default function valueValidator(fn) {
+valueValidator.strict = strictValueValidator;
+valueValidator.loose = looseValueValidator;
+
+export function strictValueValidator(fn) {
+    return looseValueValidator((...args) => {
+        const validator = fn(...args);
+        return function (value, name) {
+            if (!this::validator(value)){
+                throw new Error(`Invalid value '${ value }' for '${ name }' on ${ this }`);
+            }
+            else {
+                return true;
+            }
+        };
+    });
+}
+
+export function looseValueValidator(fn) {
     return ensureAccessors((...args) => {
         const validator = fn(...args);
 
@@ -10,7 +27,7 @@ export default function valueValidator(fn) {
                 return {
                     ...rest,
                     set(value) {
-                        if (this::validator(value)) {
+                        if (this::validator(value, name)) {
                             this::set(value);
                         }
                     }
@@ -24,4 +41,13 @@ export default function valueValidator(fn) {
             }
         };
     });
+}
+
+export default function valueValidator(fn) {
+    const decorator = looseValueValidator(fn);
+
+    decorator.loose = decorator;
+    decorator.strict = strictValueValidator(fn);
+
+    return decorator;
 }
