@@ -114,7 +114,7 @@ describe("Value Transformer", () => {
         strictEqual(valueFromSet1, 42);
 
         strictEqual(obj.computedValue, 8);
-        strictEqual(valueFromSet2, 2);
+        strictEqual(valueFromSet2, 8);
     });
 
     it("should work with property accessors in classes", () => {
@@ -151,7 +151,7 @@ describe("Value Transformer", () => {
         strictEqual(valueFromSet1, 42);
 
         strictEqual(obj.computedValue, 8);
-        strictEqual(valueFromSet2, 2);
+        strictEqual(valueFromSet2, 8);
     });
 
     it("should work with static property accessors in classes", () => {
@@ -186,6 +186,24 @@ describe("Value Transformer", () => {
         strictEqual(valueFromSet1, 42);
 
         strictEqual(Obj.computedValue, 8);
-        strictEqual(valueFromSet2, 2);
+        strictEqual(valueFromSet2, 8);
+    });
+
+    it("should work with the examples in the README", () => {
+        const trimmer = valueTransformer(() => s => s.trim());
+        const upperCase = valueTransformer(() => s => s.toUpperCase());
+        const replacer = valueTransformer((from, to) => s => s.split(from).join(to));
+
+        const target = {
+          @trimmer()
+          @upperCase()
+          @replacer(',', '--')
+          get value() { return this.storage; },
+          set value(v) { this.storage = v; }
+        };
+
+        target.value = '   so space, very blanks    ';
+
+        strictEqual(target.value, 'SO SPACE-- VERY BLANKS');
     });
 });

@@ -18,26 +18,26 @@ export default function valueTransformer(fn) {
                     }
                 };
             }
-            else if (get) {
-                delete rest.writable; // Related to babel#1949
-
-                return {
-                    ...rest,
-                    set,
-                    get(...args) {
-                        return this::transformer(this::get(...args));
-                    }
-                };
-            }
             else if (set) {
                 delete rest.writable; // Related to babel#1949
 
                 return {
                     ...rest,
+                    get,
                     set(...args) {
                         return this::set(this::transformer(...args));
                     }
                 }
+            }
+            else if (get) {
+                delete rest.writable; // Related to babel#1949
+
+                return {
+                    ...rest,
+                    get(...args) {
+                        return this::transformer(this::get(...args));
+                    }
+                };
             }
         };
     };
