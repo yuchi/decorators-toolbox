@@ -26,7 +26,7 @@ Every helper is tested against:
 that is in the form `@decorator(...args)`. You can anyway invoke it just after
 creation to get a parens-free decorator. My personal advice: choose the parens.
 
-### Value Transformer <a name="value-transformer"></a>
+### Value Transformer
 
 ```js
 import { valueTransformer } from 'decorators-toolbox';
@@ -75,7 +75,7 @@ target.value = '   so space, very blanks    ';
 console.assert(target.value === 'SO SPACE-- VERY BLANKS');
 ```
 
-## Ensure Accessors <a name="ensure-accessors"></a>
+## Ensure Accessors
 
 ```js
 import { ensureAccessors } from 'decorators-toolbox';
